@@ -1,0 +1,5 @@
+name = "arweave-exex-backfill"
+
+assets = [
+    ".env"
+]
