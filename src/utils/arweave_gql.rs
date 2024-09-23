@@ -40,7 +40,7 @@ async fn retrieve_all_transactions(scan_count: u32) -> Result<Vec<u32>, Error> {
                     tags: [
                         { name: "Protocol", values: ["WeaveVM-ExEx"] }
                     ],
-                    owners: ["5JUE58yemNynRDeQDyVECKbGVCQbnX7unPrBRqCPVn5Z"]
+                    owners: ["5JUE58yemNynRDeQDyVECKbGVCQbnX7unPrBRqCPVn5Z", "F8XVrMQzsHiWfn1CaKtUPxAgUkATXQjXULWw3oVXCiFV"]
                 ) {
                     edges {
                         node {
