@@ -126,6 +126,7 @@ dependencies = [
  "serde_json",
  "shuttle-axum",
  "shuttle-runtime",
+ "tokio",
 ]
 
 [[package]]
