@@ -21,7 +21,13 @@ Once you run an `arweave-exex-backfill` extension instance for your Arweave Uplo
 ### Get an archived block by blockNumber
 
 ```bash
-GET /block/:id
+GET /block/id/:id
+```
+
+### Get an archived block by blockHash
+
+```bash
+GET /block/hash/:hash
 ```
 ## License
 This project is licensed under the [MIT License](./LICENSE)

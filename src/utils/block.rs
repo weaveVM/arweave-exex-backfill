@@ -79,3 +79,13 @@ pub struct PlanetScaleBlock {
     pub block_number: u64,
     pub arweave_hash: String,
 }
+
+impl PlanetScaleBlock {
+    pub fn empty() -> PlanetScaleBlock {
+        PlanetScaleBlock {
+            block_hash: "error".to_string(),
+            block_number: 0,
+            arweave_hash: "error".to_string(),
+        }
+    }
+}

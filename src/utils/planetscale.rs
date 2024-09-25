@@ -45,14 +45,36 @@ pub async fn ps_insert_block(
     }
 }
 
-pub async fn ps_get_block_by_id(block_number: u64) -> Value {
+pub async fn ps_get_block_by_id(block_number: u64) -> Result<Value, Error> {
     let conn = ps_init().await;
     let select_query = format!(
         "SELECT BlockHash, BlockNumber, ArweaveHash FROM ExExBackfill WHERE BlockNumber = {}",
         block_number
     );
 
-    let block: PlanetScaleBlock = query(&select_query).fetch_one(&conn).await.unwrap();
+    let block: PlanetScaleBlock = query(&select_query)
+        .fetch_one(&conn)
+        .await
+        .unwrap_or(PlanetScaleBlock::empty());
     let res = serde_json::json!(block);
-    res
+    Ok(res)
+}
+
+pub async fn ps_get_block_by_hash(block_hash: &str) -> Result<Value, Error> {
+    let block_hash = block_hash
+        .strip_prefix("0x")
+        .unwrap_or(&block_hash)
+        .to_string();
+    let conn = ps_init().await;
+    let select_query = format!(
+        "SELECT BlockHash, BlockNumber, ArweaveHash FROM ExExBackfill WHERE BlockHash = '{}'",
+        block_hash
+    );
+
+    let block: PlanetScaleBlock = query(&select_query)
+        .fetch_one(&conn)
+        .await
+        .unwrap_or(PlanetScaleBlock::empty());
+    let res = serde_json::json!(block);
+    Ok(res)
 }
