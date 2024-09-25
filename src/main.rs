@@ -1,5 +1,7 @@
 use crate::utils::backfill::backfill_blocks;
-use crate::utils::server_handlers::{handle_get_block_by_id, handle_weave_gm, handle_get_block_by_hash};
+use crate::utils::server_handlers::{
+    handle_get_block_by_hash, handle_get_block_by_id, handle_weave_gm,
+};
 use axum::{routing::get, Router};
 use tokio::task;
 

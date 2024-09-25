@@ -85,7 +85,7 @@ impl PlanetScaleBlock {
         PlanetScaleBlock {
             block_hash: "error".to_string(),
             block_number: 0,
-            arweave_hash: "error".to_string()
+            arweave_hash: "error".to_string(),
         }
     }
 }
