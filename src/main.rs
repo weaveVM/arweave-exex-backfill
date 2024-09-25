@@ -12,7 +12,7 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/block/id/:id", get(handle_get_block_by_id));
 
     task::spawn(async move {
-        let _ = backfill_blocks(1000).await;
+        let _ = backfill_blocks(2000).await;
     });
 
     Ok(router.into())

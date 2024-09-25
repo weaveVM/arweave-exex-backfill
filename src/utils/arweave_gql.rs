@@ -139,20 +139,22 @@ async fn retrieve_all_transactions(scan_count: u32) -> Result<Vec<u32>, Error> {
 }
 
 pub async fn detect_missing_blocks(scan_count: u32) -> Result<Vec<u32>, Error> {
+    // retrieve WeaveVM-ExEx data protocol blocks on Arweave
     let blocks = retrieve_all_transactions(scan_count).await.unwrap();
+    // latest WeaveVM block number from the RPC
     let latest_block = get_latest_block_number().await? as u32;
 
-    let mut missing_blocks = Vec::new();
-    let mut prev_block = blocks.first().copied().unwrap_or(0);
+    // expected (correct but not a must to be found) blocks sequencer on Arweave
+    // its final form will represent the missed_blocks Vec
+    let mut canonical_chain_blocks: Vec<u32> = (0..=latest_block).collect();
 
-    for &current_block in blocks.iter().skip(1).chain(std::iter::once(&latest_block)) {
-        if current_block - prev_block > 1 {
-            missing_blocks.extend(prev_block + 1..current_block);
-        }
-        prev_block = current_block;
+    for &current_block in blocks.iter() {
+        // Remove current_block from canonical_chain_blocks
+        canonical_chain_blocks.retain(|&block| block != current_block);
     }
 
-    println!("missing blocks number: {:#?}", missing_blocks.len());
+    println!("missing blocks number: {:#?}", canonical_chain_blocks.len());
+    println!("{:#?}", canonical_chain_blocks);
 
-    Ok(missing_blocks)
+    Ok(canonical_chain_blocks)
 }
