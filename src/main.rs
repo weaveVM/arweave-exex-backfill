@@ -15,7 +15,7 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/block/hash/:hash", get(handle_get_block_by_hash));
 
     task::spawn(async move {
-        // let _ = backfill_blocks(2).await;
+        let _ = backfill_blocks(2500).await;
     });
 
     Ok(router.into())
