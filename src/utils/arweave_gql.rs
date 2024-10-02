@@ -1,8 +1,10 @@
+use crate::utils::constants::GQL_START_TIMESTAMP;
 use crate::utils::constants::IRYS_GQL_GATEWAY;
 use crate::utils::wvm_client::get_latest_block_number;
 use anyhow::Error;
 use reqwest::Client;
 use serde_json::{json, Value};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 async fn send_graphql(gateway: &str, query: Value) -> Result<Value, Error> {
     let client = Client::new();
@@ -22,6 +24,7 @@ async fn retrieve_all_transactions(scan_count: u32) -> Result<Vec<u32>, Error> {
     let mut cursor: Option<String> = None;
     const PAGE_SIZE: u32 = 1000;
     let mut page_count: u32 = 0;
+    let current_timestamp = get_timestamp();
 
     loop {
         page_count += 1;
@@ -32,10 +35,11 @@ async fn retrieve_all_transactions(scan_count: u32) -> Result<Vec<u32>, Error> {
 
         let query = json!({
             "query": r#"
-            query GetTransactions($cursor: String, $pageSize: Int!) {
+            query GetTransactions($cursor: String, $pageSize: Int!, $startTimestamp: BigInt!, $endTimestamp: BigInt!) {
                 transactions(
                     first: $pageSize,
                     after: $cursor,
+                    timestamp: {from: $startTimestamp, to: $endTimestamp},
                     order: DESC,
                     tags: [
                         { name: "Protocol", values: ["WeaveVM-ExEx"] }
@@ -60,7 +64,9 @@ async fn retrieve_all_transactions(scan_count: u32) -> Result<Vec<u32>, Error> {
             "#,
             "variables": {
                 "cursor": cursor,
-                "pageSize": PAGE_SIZE
+                "pageSize": PAGE_SIZE,
+                "startTimestamp": GQL_START_TIMESTAMP,
+                "endTimestamp": current_timestamp
             }
         });
 
@@ -156,4 +162,13 @@ pub async fn detect_missing_blocks(scan_count: u32) -> Result<Vec<u32>, Error> {
     println!("missing blocks number: {:#?}", canonical_chain_blocks.len());
 
     Ok(canonical_chain_blocks)
+}
+
+fn get_timestamp() -> u128 {
+    let now = SystemTime::now();
+    let unix_timestamp_ms = now
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards")
+        .as_millis();
+    unix_timestamp_ms
 }
