@@ -13,8 +13,8 @@ pub async fn backfill_blocks(scan_count: u32) -> Result<(), Error> {
     let conn = ps_init().await;
 
     for block_number in missed_blocks.iter() {
+        
         let wvm_block = retrieve_block_with_txs(*block_number).await;
-        // println!("{:#?}", &wvm_block);
         let block_number_hex: &str = wvm_block.number.as_ref().unwrap();
         let block_number = block_hex_to_decimal(block_number_hex.as_ref());
         let block_hash = wvm_block.hash.as_ref().unwrap().as_str();
