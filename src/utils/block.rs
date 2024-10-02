@@ -83,9 +83,9 @@ pub struct PlanetScaleBlock {
 impl PlanetScaleBlock {
     pub fn empty() -> PlanetScaleBlock {
         PlanetScaleBlock {
-            block_hash: "error".to_string(),
+            block_hash: "block_not_archived_or_backfilled".to_string(),
             block_number: 0,
-            arweave_hash: "error".to_string(),
+            arweave_hash: "block_not_archived_or_backfilled".to_string(),
         }
     }
 }

@@ -154,7 +154,6 @@ pub async fn detect_missing_blocks(scan_count: u32) -> Result<Vec<u32>, Error> {
     }
 
     println!("missing blocks number: {:#?}", canonical_chain_blocks.len());
-    println!("{:#?}", canonical_chain_blocks);
 
     Ok(canonical_chain_blocks)
 }
