@@ -150,7 +150,7 @@ pub async fn detect_missing_blocks(scan_count: u32) -> Result<Vec<u32>, Error> {
     // retrieve WeaveVM-ExEx data protocol blocks on Arweave
     let blocks = retrieve_all_transactions(scan_count)
         .await
-        .unwrap_or(Vec::new());
+        .unwrap();
     // latest WeaveVM block number from the RPC
     let latest_block = get_latest_block_number().await.unwrap_or(0) as u32;
 
