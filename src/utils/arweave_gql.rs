@@ -70,7 +70,9 @@ async fn retrieve_all_transactions(scan_count: u32) -> Result<Vec<u32>, Error> {
             }
         });
 
-        let res = send_graphql(IRYS_GQL_GATEWAY, query).await?;
+        let res = send_graphql(IRYS_GQL_GATEWAY, query)
+            .await
+            .unwrap_or(generate_empty_gql_server_res());
 
         let transactions = res
             .get("data")
@@ -146,9 +148,11 @@ async fn retrieve_all_transactions(scan_count: u32) -> Result<Vec<u32>, Error> {
 
 pub async fn detect_missing_blocks(scan_count: u32) -> Result<Vec<u32>, Error> {
     // retrieve WeaveVM-ExEx data protocol blocks on Arweave
-    let blocks = retrieve_all_transactions(scan_count).await.unwrap();
+    let blocks = retrieve_all_transactions(scan_count)
+        .await
+        .unwrap_or(Vec::new());
     // latest WeaveVM block number from the RPC
-    let latest_block = get_latest_block_number().await? as u32;
+    let latest_block = get_latest_block_number().await.unwrap_or(0) as u32;
 
     // expected (correct but not a must to be found) blocks sequencer on Arweave
     // its final form will represent the missed_blocks Vec
@@ -164,6 +168,8 @@ pub async fn detect_missing_blocks(scan_count: u32) -> Result<Vec<u32>, Error> {
     Ok(canonical_chain_blocks)
 }
 
+// util functions
+
 fn get_timestamp() -> u128 {
     let now = SystemTime::now();
     let unix_timestamp_ms = now
@@ -171,4 +177,18 @@ fn get_timestamp() -> u128 {
         .expect("Time went backwards")
         .as_millis();
     unix_timestamp_ms
+}
+
+fn generate_empty_gql_server_res() -> Value {
+    json!({
+        "data": {
+            "transactions": {
+                "edges": [],
+                "pageInfo": {
+                    "hasNextPage": false,
+                    "endCursor": null
+                }
+            }
+        }
+    })
 }
