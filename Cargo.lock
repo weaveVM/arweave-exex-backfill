@@ -116,6 +116,7 @@ dependencies = [
  "borsh-derive 1.5.1",
  "brotli",
  "bundlr-sdk",
+ "common",
  "dotenv",
  "ethers",
  "ethers-providers",
@@ -847,6 +848,14 @@ dependencies = [
  "strum 0.24.1",
  "strum_macros 0.24.3",
  "unicode-width",
+]
+
+[[package]]
+name = "common"
+version = "0.1.0"
+source = "git+https://github.com/weaveVM/miscalleneous.git?branch=main#8ed3bf038a727c9cfb52f7d706dca10c8e206e63"
+dependencies = [
+ "paste",
 ]
 
 [[package]]
@@ -3200,6 +3209,12 @@ dependencies = [
  "rand_core 0.6.4",
  "subtle",
 ]
+
+[[package]]
+name = "paste"
+version = "1.0.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
 
 [[package]]
 name = "path-slash"
