@@ -1,7 +1,7 @@
-use crate::utils::constants::{IRYS_GQL_GATEWAY, ARWEAVE_GQL_GATEWAY};
+use crate::utils::constants::{ARWEAVE_GQL_GATEWAY, IRYS_GQL_GATEWAY};
 use crate::utils::wvm_client::get_latest_block_number;
-use common::address_book::ADDRESS_BOOK;
 use anyhow::Error;
+use common::address_book::ADDRESS_BOOK;
 use reqwest::Client;
 use serde_json::{json, Value};
 
@@ -147,17 +147,21 @@ async fn retrieve_all_transactions(scan_count: u32, address: &str) -> Result<Vec
 pub async fn detect_missing_blocks(scan_count: u32) -> Result<Vec<u32>, Error> {
     // retrieve WeaveVM-ExEx data protocol blocks on Arweave
     let address_book: Value = serde_json::from_str(ADDRESS_BOOK).unwrap();
-    let exex_archiver_addr = address_book["ario_fmt_alphanet_exex_publisher"].as_str().unwrap();
-    let exex_backfill_addr = address_book["ario_fmt_alphanet_exex_backfiller"].as_str().unwrap();
+    let exex_archiver_addr = address_book["ario_fmt_alphanet_exex_publisher"]
+        .as_str()
+        .unwrap();
+    let exex_backfill_addr = address_book["ario_fmt_alphanet_exex_backfiller"]
+        .as_str()
+        .unwrap();
     println!(" ARCHIVER ADDRESS {}", exex_archiver_addr);
     println!("Backfiller ADDRESS {}", exex_backfill_addr);
     let exex_archiver_blocks = retrieve_all_transactions(scan_count, exex_archiver_addr)
         .await
         .unwrap();
     let exex_backfill_blocks = retrieve_all_transactions(scan_count, exex_backfill_addr)
-    .await
-    .unwrap();
-let mut blocks = [&exex_archiver_blocks[..], &exex_backfill_blocks[..]].concat();
+        .await
+        .unwrap();
+    let mut blocks = [&exex_archiver_blocks[..], &exex_backfill_blocks[..]].concat();
     println!("{:?}", blocks);
     // remove possible duplicates from both archiver & backfill
     blocks.sort();
