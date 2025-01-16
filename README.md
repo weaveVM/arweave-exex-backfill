@@ -15,7 +15,7 @@ Once you run an `arweave-exex-backfill` extension instance for your Arweave Uplo
 
 ## WeaveVM Backfill Server
 
-- Server Endpoint: https://arweave-exex-backfill.shuttleapp.rs
+- Server Endpoint: https://exex-backfiller-oyho.shuttle.app/
 - Backfill address (backfiller): [F8XVrMQzsHiWfn1CaKtUPxAgUkATXQjXULWw3oVXCiFV](https://viewblock.io/arweave/address/F8XVrMQzsHiWfn1CaKtUPxAgUkATXQjXULWw3oVXCiFV?tab=items)
 
 ### Get an archived block by blockNumber
