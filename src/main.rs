@@ -10,7 +10,15 @@ use tower_http::cors::{Any, CorsLayer};
 mod utils;
 
 #[shuttle_runtime::main]
-async fn main() -> shuttle_axum::ShuttleAxum {
+async fn main(
+    #[shuttle_runtime::Secrets] secrets: shuttle_runtime::SecretStore,
+) -> shuttle_axum::ShuttleAxum {
+    // load secrets from Shuttle.toml into env var;
+    secrets.into_iter().for_each(|(key, val)| {
+        println!("{:?} {:?}", key, val);
+        std::env::set_var(key, val);
+    });
+
     let cors = CorsLayer::new()
         .allow_methods([Method::GET, Method::POST])
         .allow_headers(Any)
@@ -23,7 +31,7 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/block/hash/:hash", get(handle_get_block_by_hash));
 
     task::spawn(async move {
-        let _ = backfill_blocks(5000).await;
+        let _ = backfill_blocks(10_000).await;
     });
 
     Ok(router.into())

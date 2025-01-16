@@ -21,13 +21,14 @@ pub async fn backfill_blocks(scan_count: u32) -> Result<(), Error> {
         let borsh_brotli = Block::brotli_compress(&borsh_block);
 
         let arweave_id = ArweaveRequest::new()
+            .set_tag("Protocol", "WeaveVM-ExEx")
+            .set_tag("ExEx-Type", "Arweave-Data-Backfiller")
             .set_tag("Content-Type", "application/octet-stream")
             .set_tag("WeaveVM:Encoding", "Borsh-Brotli")
             .set_tag("Block-Number", block_number.as_str())
             .set_tag("Block-Hash", block_hash)
             .set_tag("Client-Version", RETH_CLIENT_VERSION)
             .set_tag("Network", WVM_NETWORK_TAG)
-            .set_tag("WeaveVM:Backfill", "true")
             .set_data(borsh_brotli)
             .send_with_provider(&ar_uploader_provider)
             .await
