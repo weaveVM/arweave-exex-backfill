@@ -78,3 +78,23 @@ pub async fn ps_get_block_by_hash(block_hash: &str) -> Result<Value, Error> {
     let res = serde_json::json!(block);
     Ok(res)
 }
+
+pub async fn ps_get_latest_block_id() -> u64 {
+    let conn = ps_init().await;
+
+    let query_str = format!("SELECT MAX(BlockNumber) AS LatestNetworkBlockId FROM ExExBackfill;");
+
+    // let default_start_block = if is_backfill {
+    //     get_env_var("backfill_start_block")
+    //         .unwrap()
+    //         .parse::<u64>()
+    //         .unwrap()
+    // } else {
+    //     network.start_block
+    // };
+
+    let latest_archived: u64 = query(&query_str).fetch_scalar(&conn).await.unwrap_or(0);
+    // return latest archived block in planetscale + 1
+    // so the process can start archiving from latest_archived + 1
+    latest_archived
+}
