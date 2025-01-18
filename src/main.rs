@@ -4,6 +4,8 @@ use crate::utils::server_handlers::{
 };
 use axum::{routing::get, Router};
 use http::Method;
+use std::thread;
+use std::time::Duration;
 use tokio::task;
 use tower_http::cors::{Any, CorsLayer};
 
@@ -31,7 +33,10 @@ async fn main(
         .route("/block/hash/:hash", get(handle_get_block_by_hash));
 
     task::spawn(async move {
-        let _ = backfill_blocks(10_000).await;
+        loop {
+            let _ = backfill_blocks(10_000).await;
+            thread::sleep(Duration::from_secs(3600)); // 1h
+        }
     });
 
     Ok(router.into())
