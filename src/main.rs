@@ -35,7 +35,7 @@ async fn main(
     task::spawn(async move {
         loop {
             let _ = backfill_blocks(10_000).await;
-            thread::sleep(Duration::from_secs(3600)); // 1h
+            thread::sleep(Duration::from_secs(7200)); // 2h
         }
     });
 
