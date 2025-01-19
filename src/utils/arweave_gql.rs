@@ -5,7 +5,7 @@ use common::address_book::ADDRESS_BOOK;
 use reqwest::Client;
 use serde_json::{json, Value};
 
-async fn send_graphql(gateway: &str, query: Value) -> Result<Value, Error> {
+pub async fn send_graphql(gateway: &str, query: Value) -> Result<Value, Error> {
     let client = Client::new();
     let res = client
         .post(format!("{}/graphql", gateway))
@@ -157,10 +157,10 @@ pub async fn detect_missing_blocks(scan_count: u32) -> Result<Vec<u32>, Error> {
         .unwrap();
     let exex_archiver_blocks = retrieve_all_transactions(scan_count, exex_archiver_addr)
         .await
-        .unwrap();
+        .unwrap_or_default();
     let exex_backfill_blocks = retrieve_all_transactions(scan_count, exex_backfill_addr)
         .await
-        .unwrap();
+        .unwrap_or_default();
     // concat archiver and backfill blocks
     let mut blocks = [&exex_archiver_blocks[..], &exex_backfill_blocks[..]].concat();
     // remove possible duplicates from both archiver & backfill
@@ -186,7 +186,7 @@ pub async fn detect_missing_blocks(scan_count: u32) -> Result<Vec<u32>, Error> {
 
 // util functions
 
-fn generate_empty_gql_server_res() -> Value {
+pub fn generate_empty_gql_server_res() -> Value {
     json!({
         "data": {
             "transactions": {
